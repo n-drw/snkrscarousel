@@ -15,7 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.ui.tooling.preview.Preview
 import cab.andrew.snkrscarousel.domain.models.Sneaker
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,42 +40,54 @@ fun SneakerCarousel(){
     val sneakers = sneakerListViewModel.sneakers.value
 
     if(sneakers.isEmpty()) return
-
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 380.dp)
-    ) { page ->
-        var currPg = currentPage
-        var sneaker = sneakers[pagerState.currentPage]
-
-        Card(
-            Modifier
-                .graphicsLayer {
-                    val pageOffSet = calculateCurrentOffsetForPage(page).absoluteValue
-
-                    lerp(
-                        start = 0.85f,
-                        stop = 1f,
-                        fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                    ).also { scale ->
-                        scaleX = scale
-                        scaleY = scale
-                    }
-
-                    alpha = lerp(
-                        start = 0.5f,
-                        stop = 1f,
-                        fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                    )
+    ConstraintLayout {
+        val horizontalPagerRef = createRef()
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .padding(top = 340.dp)
+                .constrainAs(horizontalPagerRef) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
                 }
-                .height(900.dp)
-                .width(300.dp),
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp
-        ) {
-            SneakerCarouselItem(Modifier.fillMaxWidth(), sneaker)
+                .fillMaxSize()
+        ) { page ->
+            var sneaker = sneakers[page]
+
+            Card(
+                Modifier
+                    .graphicsLayer {
+                        val pageOffSet = calculateCurrentOffsetForPage(page).absoluteValue
+
+                        lerp(
+                            start = 0.85f,
+                            stop = 1f,
+                            fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                        ).also { scale ->
+                            scaleX = scale
+                            scaleY = scale
+                        }
+
+                        alpha = lerp(
+                            start = 0.5f,
+                            stop = 1f,
+                            fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                        )
+                    }
+                    .height(500.dp)
+                    .width(250.dp),
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp
+            ) {
+                SneakerCarouselItem(Modifier.fillMaxWidth(), sneaker)
+            }
         }
     }
+}
+
+@Preview
+@Composable
+@InternalCoroutinesApi
+fun PreviewCarousel() {
+    SneakerCarousel()
 }

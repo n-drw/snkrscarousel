@@ -4,18 +4,23 @@ buildscript {
     ext {
         compose_version = Versions.compose
         kotlin_version = Versions.kotlin
+        hilt_version = Versions.hilt
     }
     repositories {
         google()
         mavenCentral()
         maven {
-            url "https://kotlin.bintray.com/kotlinx"
+            url = uri("https://kotlin.bintray.com/kotlinx")
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+            content {
+                includeModule("com.google.dagger", "hilt-android-gradle-plugin")
+            }
         }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${Versions.gradle}"
+        classpath "com.android.tools.build:gradle:7.1.0-alpha01"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:HEAD-SNAPSHOT"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:${Versions.junit5}"
     }
 }

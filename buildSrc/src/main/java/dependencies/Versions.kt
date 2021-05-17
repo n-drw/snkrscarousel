@@ -17,6 +17,7 @@ object Versions {
     const val kotlin_compiler_extension = "1.0.0-beta06"
 
     const val activity_ktx = "1.3.0-alpha07"
+    const val androidx_hilt = "1.0.0"
     const val core_ktx = "1.3.2"
     const val app_compat = "1.3.0-beta01"
     const val material = "1.2.1"

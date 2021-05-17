@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import androidx.annotation.IntRange
 import androidx.compose.animation.core.SpringSpec
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.lazy.LazyRow
 
 private const val SnapSpringStiffness = 3050f
@@ -159,7 +160,6 @@ internal fun Pager(
     }
     val semantics = Modifier.semantics {
         horizontalScrollAxisRange = semanticsAxisRange
-        // Hook up scroll actions to our state
         scrollBy { x, y ->
             coroutineScope.launch {
                 if (isVertical) {
@@ -170,8 +170,6 @@ internal fun Pager(
             }
             true
         }
-        // Treat this as a selectable group
-        selectableGroup()
     }
 
     val scrollable = Modifier.scrollable(
@@ -196,14 +194,16 @@ internal fun Pager(
                     val itemSemantics = Modifier.semantics {
                         this.selected = page == state.currentPage
                     }
-                    Box(
+                    BoxWithConstraints(
                         contentAlignment = Alignment.Center,
                         modifier = itemSemantics.then(PageData(page))
                     ) {
                         val scope = remember(this, state) {
                             PagerScopeImpl(this, state)
                         }
-                        scope.content(page)
+                        if(page > 0) {
+                            scope.content(page)
+                        }
                     }
                 }
             }

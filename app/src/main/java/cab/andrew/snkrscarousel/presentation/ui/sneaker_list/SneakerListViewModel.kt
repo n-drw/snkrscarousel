@@ -26,10 +26,6 @@ constructor(
     val sneakers: MutableState<List<Sneaker>> = mutableStateOf(ArrayList())
     private val loading = mutableStateOf(false)
 
-    init {
-        getSneakers()
-    }
-
     fun getSneakers() {
         getSneakers.execute()
             .onEach { dataState ->

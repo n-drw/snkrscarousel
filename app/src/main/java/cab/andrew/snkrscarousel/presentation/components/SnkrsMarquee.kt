@@ -22,7 +22,8 @@ fun SnkrsMarquee(modifier: Modifier = Modifier) {
 
     BoxWithConstraints(
         modifier = Modifier
-            .padding(top = 40.dp, bottom = 8.dp)
+            .padding(top = 40.dp, bottom = 8.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
 
         val logoMarquee = rememberInfiniteTransition().animateValue(
@@ -44,7 +45,7 @@ fun SnkrsMarquee(modifier: Modifier = Modifier) {
             typeConverter = Dp.VectorConverter,
             animationSpec = infiniteRepeatable(
                 animation = tween(
-                    durationMillis = 12000,
+                    durationMillis = 11520,
                     easing = LinearEasing
                 ),
             repeatMode = RepeatMode.Restart
@@ -58,60 +59,54 @@ fun SnkrsMarquee(modifier: Modifier = Modifier) {
             animationSpec = infiniteRepeatable(
                 animation = tween(
                     delayMillis = 8000,
-                    durationMillis = 12000,
+                    durationMillis = 11520,
                     easing = LinearEasing
                 ),
                 repeatMode = RepeatMode.Restart
             )
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Image(
-                logo,
-                contentDescription = "logo",
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(150.dp)
-                    .padding(start = 6.dp)
-                    .absoluteOffset(x = logoMarquee.value)
-            )
-            Image(
-                logo,
-                contentDescription = "logo",
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(150.dp)
-                    .padding(start = 6.dp)
-                    .absoluteOffset(x = logoMarquee.value)
-            )
-            Image(
-                logo,
-                contentDescription = "logo",
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(150.dp)
-                    .padding(start = 6.dp)
-                    .absoluteOffset(x = logoMarquee.value)
-            )
-
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Row(modifier = Modifier.fillMaxSize(maxWidth.value),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
                 logo,
                 contentDescription = "logo",
                 modifier = Modifier
                     .height(50.dp)
-                    .width(150.dp)
+                    .width(152.dp)
+                    .padding(start = 6.dp)
+                    .absoluteOffset(x = logoMarquee.value)
+            )
+            Image(
+                logo,
+                contentDescription = "logo",
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(152.dp)
+                    .padding(start = 6.dp)
+                    .absoluteOffset(x = logoMarquee.value)
+            )
+            Image(
+                logo,
+                contentDescription = "logo",
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(152.dp)
+                    .padding(start = 6.dp)
+                    .absoluteOffset(x = logoMarquee.value)
+            )
+        }
+
+        Row(modifier = Modifier.fillMaxSize(maxWidth.value),
+            horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+            Image(
+                logo,
+                contentDescription = "logo",
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(152.dp)
                     .padding(start = 6.dp)
                     .absoluteOffset(x = logoMarquee2.value)
             )
@@ -120,7 +115,7 @@ fun SnkrsMarquee(modifier: Modifier = Modifier) {
                 contentDescription = "logo",
                 modifier = Modifier
                     .height(50.dp)
-                    .width(150.dp)
+                    .width(152.dp)
                     .padding(start = 6.dp)
                     .absoluteOffset(x = logoMarquee2.value)
             )
@@ -129,12 +124,11 @@ fun SnkrsMarquee(modifier: Modifier = Modifier) {
                 contentDescription = "logo",
                 modifier = Modifier
                     .height(50.dp)
-                    .width(150.dp)
+                    .width(152.dp)
                     .padding(start = 6.dp)
                     .absoluteOffset(x = logoMarquee2.value)
             )
         }
-
     }
 }
 

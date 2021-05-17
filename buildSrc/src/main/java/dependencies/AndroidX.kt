@@ -5,6 +5,7 @@ object AndroidX {
     const val app_compat = "androidx.appcompat:appcompat:${Versions.app_compat}"
     const val ui_tooling = "androidx.ui:ui-tooling:${Versions.androidx_ui}"
     const val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
+    const val hilt = "androidx.hilt:hilt-common:${Versions.androidx_hilt}"
 
     const val constraint_compose = "androidx.constraintlayout:constraintlayout-compose:${Versions.compose_constraint}"
     const val compose_activity = "androidx.activity:activity-compose:${Versions.compose_activity}"

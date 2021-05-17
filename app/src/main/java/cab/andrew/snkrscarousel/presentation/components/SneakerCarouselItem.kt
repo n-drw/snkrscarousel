@@ -39,7 +39,7 @@ fun SneakerCarouselItem(modifier: Modifier = Modifier, sneaker: Sneaker) {
     )
 
     Column {
-        Box(modifier) {
+        BoxWithConstraints(modifier) {
 
             Image(
                 painter = painter,
@@ -94,4 +94,10 @@ fun SneakerCarouselItem(modifier: Modifier = Modifier, sneaker: Sneaker) {
         }
 
     }
+}
+
+@Preview
+@Composable
+fun SneakerCarouselItemPreview(sneaker: Sneaker) {
+    SneakerCarouselItem(sneaker = sneaker)
 }
