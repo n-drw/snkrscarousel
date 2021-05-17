@@ -1,0 +1,128 @@
+import dependencies.AnnotationProcessing
+import dependencies.Accompanist
+import dependencies.InstrumentationTest
+import dependencies.Jetbrains
+import dependencies.Square
+import dependencies.UnitTest
+import dependencies.Versions
+import dependencies.AndroidX
+import dependencies.Google
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id "de.mannodermaus.android-junit5"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') {reader ->
+        localProperties.load(reader)
+    }
+}
+
+android {
+    compileSdkVersion Versions.compileSdk
+
+    defaultConfig {
+        applicationId "cab.andrew.snkrscarousel"
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
+        versionCode Versions.versionCode
+        versionName Versions.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "RAPID_API_KEY", localProperties.rapid_api_key
+            buildConfigField 'String', "RAPID_API_HOST", localProperties.rapid_api_host
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = Versions.jvmTarget
+        useIR = true
+    }
+    composeOptions {
+        def kotlin_compiler_version = Versions.kotlin
+        kotlinCompilerVersion kotlin_compiler_version
+
+        def kotlin_compiler_extension_version = Versions.kotlin_compiler_extension
+        kotlinCompilerExtensionVersion kotlin_compiler_extension_version
+    }
+    packagingOptions {
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
+
+
+}
+
+dependencies {
+
+    implementation AndroidX.ktx_activity
+    implementation AndroidX.core_ktx
+    implementation AndroidX.androidx_fragment
+    implementation AndroidX.app_compat
+    implementation AndroidX.ui_tooling
+    implementation AndroidX.nav_fragment_ktx
+    implementation AndroidX.nav_ui_ktx
+    implementation AndroidX.compose_ui
+    implementation AndroidX.compose_ui_tooling
+    implementation AndroidX.compose_ui_util
+    implementation AndroidX.compose_foundation
+    implementation AndroidX.compose_material
+    implementation AndroidX.compose_icons_core
+    implementation AndroidX.compose_icons_extended
+    implementation AndroidX.constraint_compose
+    implementation AndroidX.navigation_compose
+    implementation AndroidX.compose_activity
+    implementation AndroidX.navigation_hilt
+    implementation AndroidX.room_runtime
+    implementation AndroidX.room_ktx
+    implementation AndroidX.datastore
+    implementation AndroidX.hilt_lifecycle_viewmodel
+
+    implementation Google.material
+    implementation Google.hilt_android
+
+    implementation Accompanist.coil
+    implementation Accompanist.pager
+    implementation Accompanist.system_ui
+
+    implementation Jetbrains.kotlin_stdlib
+
+    implementation Square.retrofit
+    implementation Square.retrofit_moshi
+    implementation Square.retrofit_moshi_converter
+    implementation Square.moshi_kotlin
+    kapt Square.moshi_kotlin_codegen
+    implementation Square.okHttp
+    implementation Square.okhttp_logging
+    implementation Square.leak_canary
+
+    kapt AnnotationProcessing.hilt_compiler
+    kapt AnnotationProcessing.room_compiler
+
+    testImplementation UnitTest.jupiter_api
+    testRuntimeOnly UnitTest.jupiter_engine
+
+    testImplementation UnitTest.mock_web_server
+
+    implementation InstrumentationTest.compose_ui
+}
+

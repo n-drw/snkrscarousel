@@ -1,0 +1,25 @@
+import dependencies.Versions
+
+buildscript {
+    ext {
+        compose_version = Versions.compose
+        kotlin_version = Versions.kotlin
+    }
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://kotlin.bintray.com/kotlinx"
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${Versions.gradle}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:${Versions.junit5}"
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
