@@ -68,7 +68,7 @@ object NetworkModule {
                     val req = chain.request()
                     val originalUrl = req.url
                     val newUrl = originalUrl.newBuilder()
-                        .addQueryParameter("limit", "10")
+                        .addQueryParameter("limit", "100")
                         .build()
 
                     chain.proceed(
