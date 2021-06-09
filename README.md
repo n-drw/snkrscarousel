@@ -12,7 +12,7 @@ Snkrs Carousel is an MVVM application with caching persistence in a local databa
 - Moshi
 - Coroutines/Flow
 - Accompanist Coil (Image Loading)
-- Custom Pagination based of ViewPager/Pager in Compose
+- Custom Pagination based off ViewPager/[Pager](https://google.github.io/accompanist/pager/) in Compose
 - Custom Transition & Display Animations
 - LeakCanary
 - The Sneaker Database Api (RapidApi)
