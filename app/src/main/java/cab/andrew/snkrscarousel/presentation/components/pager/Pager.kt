@@ -10,8 +10,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -39,7 +37,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import androidx.annotation.IntRange
 import androidx.compose.animation.core.SpringSpec
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 
 private const val SnapSpringStiffness = 3050f
@@ -83,7 +81,7 @@ fun HorizontalPager(
     modifier: Modifier = Modifier,
     reverseLayout: Boolean = false,
     itemSpacing: Dp = 0.dp,
-    @IntRange(from = 1) offscreenLimit: Int = 1,
+    offscreenLimit: Int = 3,
     dragEnabled: Boolean = true,
     flingBehavior: FlingBehavior = PagerDefaults.defaultPagerFlingConfig(state),
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
@@ -106,35 +104,6 @@ fun HorizontalPager(
 }
 
 @Composable
-fun VerticalPager(
-    state: PagerState,
-    modifier: Modifier = Modifier,
-    reverseLayout: Boolean = false,
-    itemSpacing: Dp = 0.dp,
-    @IntRange(from = 1) offscreenLimit: Int = 1,
-    dragEnabled: Boolean = true,
-    flingBehavior: FlingBehavior = PagerDefaults.defaultPagerFlingConfig(state),
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    content: @Composable PagerScope.(page: Int) -> Unit,
-) {
-    Pager(
-        state = state,
-        modifier = modifier,
-        isVertical = true,
-        reverseLayout = reverseLayout,
-        itemSpacing = itemSpacing,
-        verticalAlignment = verticalAlignment,
-        horizontalAlignment = horizontalAlignment,
-        offscreenLimit = offscreenLimit,
-        dragEnabled = dragEnabled,
-        flingBehavior = flingBehavior,
-        content = content
-    )
-}
-
-
-@Composable
 internal fun Pager(
     state: PagerState,
     modifier: Modifier,
@@ -143,7 +112,7 @@ internal fun Pager(
     isVertical: Boolean,
     verticalAlignment: Alignment.Vertical,
     horizontalAlignment: Alignment.Horizontal,
-    @IntRange(from = 1) offscreenLimit: Int,
+    offscreenLimit: Int,
     dragEnabled: Boolean,
     flingBehavior: FlingBehavior,
     content: @Composable PagerScope.(page: Int) -> Unit,
@@ -188,20 +157,18 @@ internal fun Pager(
         content = {
             val firstPage = (state.currentPage - offscreenLimit).coerceAtLeast(Int.MIN_VALUE)
             val lastPage = (state.currentPage + offscreenLimit).coerceAtMost(Int.MAX_VALUE)
-
             for (page in firstPage..lastPage) {
                 key(page) {
                     val itemSemantics = Modifier.semantics {
                         this.selected = page == state.currentPage
                     }
-                    BoxWithConstraints(
-                        contentAlignment = Alignment.Center,
+                    Row(
                         modifier = itemSemantics.then(PageData(page))
                     ) {
                         val scope = remember(this, state) {
                             PagerScopeImpl(this, state)
                         }
-                        if(page > 0) {
+                        if(page >= 0) {
                             scope.content(page)
                         }
                     }
@@ -245,7 +212,7 @@ internal fun Pager(
                     xItemOffset = (offsetForPage * (placeable.width + itemSpacingPx)).roundToInt()
                 }
 
-                placeable.placeRelative(
+                placeable.place(
                     x = xCenterOffset + xItemOffset,
                     y = yCenterOffset + yItemOffset,
                 )
@@ -254,22 +221,16 @@ internal fun Pager(
     }
 }
 
-/**
- * Scope for [HorizontalPager] content.
- */
-
 @Stable
-interface PagerScope : BoxScope {
+interface PagerScope : RowScope {
     val currentPage: Int
-
     val currentPageOffset: Float
 }
 
-
 private class PagerScopeImpl(
-    private val boxScope: BoxScope,
+    private val rowScope: RowScope,
     private val state: PagerState,
-) : PagerScope, BoxScope by boxScope {
+) : PagerScope, RowScope by rowScope {
     override val currentPage: Int
         get() = state.currentPage
 

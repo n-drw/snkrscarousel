@@ -58,7 +58,7 @@ class PagerState(
 
     private val scrollableState = ScrollableState { deltaPixels ->
         val size = pageSize.coerceAtLeast(1)
-        -scrollByOffset(-deltaPixels / size) * size
+        scrollByOffset(-deltaPixels / size) * size
     }
 
     init {
@@ -80,6 +80,9 @@ class PagerState(
     internal val lastPageIndex: Int
         get() = (pageCount - 1).coerceAtLeast(0)
 
+    internal val firstPageIndex: Int
+        get() = pageCount.coerceAtMost(lastPageIndex)
+
     @get:IntRange(from = 0)
     var currentPage: Int
         get() = _currentPage
@@ -87,24 +90,13 @@ class PagerState(
             _currentPage = value.coerceIn(0, lastPageIndex)
         }
 
-    @get:IntRange(from = 0)
-    var minPage: Int
-        get() = _currentPage
-        private set(value) {
-            _currentPage = value.coerceIn(minPage, lastPageIndex)
-        }
 
-    /**
-     * The current offset from the start of [currentPage], as a fraction of the page width.
-     *
-     * To update the scroll position, use [scrollToPage] or [animateScrollToPage].
-     */
     @get:FloatRange(from = 0.0, to = 1.0)
     var currentPageOffset: Float
         get() = _currentPageOffset.value
         private set(value) {
             _currentPageOffset.value = value.coerceIn(
-                minimumValue = 0f,
+                minimumValue = -1f,
                 maximumValue = if (currentPage == lastPageIndex) 0f else 1f,
             )
         }
@@ -117,9 +109,6 @@ class PagerState(
     ) {
         requireCurrentPage(page, "page")
         requireCurrentPageOffset(pageOffset, "pageOffset")
-
-        if (page == currentPage) return
-
         scroll {
             animateToPage(
                 page = page.coerceIn(0, lastPageIndex),
@@ -135,21 +124,18 @@ class PagerState(
     ) {
         requireCurrentPage(page, "page")
         requireCurrentPageOffset(pageOffset, "pageOffset")
-
         scroll {
             currentPage = page
             currentPageOffset = pageOffset
         }
     }
 
-    private fun snapToNearestPage() {
-        if (currentPage == lastPageIndex) {
-            currentPage = 0
-            currentPageOffset = 0f
-        } else if(currentPage == 0) {
-            currentPage = lastPageIndex
-            currentPageOffset = 0f
-        }
+    private fun snapToNearestPage(
+        velocity: Float = 0f
+    ) {
+//        Log.d(TAG, "snapToNearestPage: $min")
+
+
         currentPage -= currentPageOffset.roundToInt()
     }
 
@@ -187,20 +173,28 @@ class PagerState(
 
     private fun scrollByOffset(deltaOffset: Float): Float {
         val current = absolutePosition
-        val target = (current + deltaOffset).coerceIn(0f, lastPageIndex.toFloat())
+        val min = -pageSize * currentPageOffset
+        Log.d(TAG, "scrollByOffset: $min")
+        var target = (current + deltaOffset).coerceIn(-1f, lastPageIndex.toFloat())
+        if (target == lastPageIndex.toFloat()) {
+            target = 0f
+        } else if (target == 0f && min > -0f) {
+            target = lastPageIndex.toFloat()
+        }
         updateFromScrollPosition(target)
         return deltaOffset - (target - current)
     }
 
     suspend fun fling(initialVelocity: Float,
-        decayAnimationSpec: DecayAnimationSpec<Float> = exponentialDecay(),
-        snapAnimationSpec: AnimationSpec<Float> = spring(),
-        scrollBy: (Float) -> Float) : Float
+                      decayAnimationSpec: DecayAnimationSpec<Float> = exponentialDecay(),
+                      snapAnimationSpec: AnimationSpec<Float> = spring(),
+                      scrollBy: (Float) -> Float) : Float
     {
         val targetOffset = decayAnimationSpec.calculateTargetValue(
             initialValue = currentPageOffset * pageSize,
             initialVelocity = initialVelocity
         ) / pageSize
+
 
         val targetPosition = currentPage + determineSpringBackOffset(
             velocity = initialVelocity,
@@ -209,10 +203,9 @@ class PagerState(
 
         val targetPage = when {
             targetOffset > 0 -> (currentPage + 1).coerceAtMost(lastPageIndex)
+            targetOffset < 0 -> (currentPage - 1).coerceAtLeast(0)
             else -> currentPage
         }
-
-        var currentPager = true
 
         var lastVelocity: Float = initialVelocity
 
@@ -222,18 +215,28 @@ class PagerState(
             initialVelocity = initialVelocity,
             animationSpec = snapAnimationSpec,
         ) { value, velocity ->
-            if((initialVelocity < 0 && absolutePosition <= targetPage) ||
-                (initialVelocity > 0 && absolutePosition >= targetPage))
-            {
-                currentPage = targetPage
-                currentPageOffset = 0f
+//            if((velocity < 0 && absolutePosition <= targetPage) ||
+//                (velocity > 0 && absolutePosition >= targetPage))
+//            {
+//                currentPage = targetPage
+//                currentPageOffset = 0f
+//            }
+
+            if(velocity < 0 && absolutePosition == lastPageIndex.toFloat()) {
+                currentPage = 0
+                currentPage -= currentPageOffset.roundToInt()
+            }
+
+            if(velocity > 0 && absolutePosition == 0f) {
+                currentPage = lastPageIndex
+                currentPage -= currentPageOffset.roundToInt()
             }
 
             scrollBy(value - (absolutePosition * pageSize))
             lastVelocity = velocity
 
         }
-        snapToNearestPage()
+        snapToNearestPage(initialVelocity)
         return lastVelocity
     }
 
