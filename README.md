@@ -1,6 +1,6 @@
-##SnkrsCarousel
+## SnkrsCarousel
 
-######Sr. Android Engineer SNKRS assessment
+###### Sr. Android Engineer SNKRS assessment
 ![](assets/README-42f84521.md)
 ![](demo.gif)
 
