@@ -25,8 +25,6 @@ import kotlin.math.absoluteValue
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-const val TAG = "PagerState: "
-
 @Composable
 fun rememberPagerState(
     @IntRange(from = 0) pageCount: Int,
@@ -174,7 +172,6 @@ class PagerState(
     private fun scrollByOffset(deltaOffset: Float): Float {
         val current = absolutePosition
         val min = -pageSize * currentPageOffset
-        Log.d(TAG, "scrollByOffset: $min")
         var target = (current + deltaOffset).coerceIn(-1f, lastPageIndex.toFloat())
         if (target == lastPageIndex.toFloat()) {
             target = 0f
