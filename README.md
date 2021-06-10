@@ -17,7 +17,7 @@ SnkrsCarousel is an MVVM application with caching persistence in a local databas
 - Custom Pagination based off ViewPager/[Pager](https://google.github.io/accompanist/pager/) in Compose
 - Custom Transition & Display Animations
 - LeakCanary
-- The Sneaker Database Api (RapidApi)[https://rapidapi.com/tg4-solutions-tg4-solutions-default/api/the-sneaker-database/details]
+- The Sneaker Database Api [RapidApi](https://rapidapi.com/tg4-solutions-tg4-solutions-default/api/the-sneaker-database/details)
 
 Created with Jetpack Compose and built in Android Studio Bumblebee | 2021.1.1 Canary 1
 
